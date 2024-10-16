@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import Node from "./node.vue";
 </script>
 
@@ -44,25 +44,28 @@ import Node from "./node.vue";
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from "vue";
+import type { NodeData } from "./node.vue";
+
+export default defineComponent({
   name: "App",
   data() {
     return {
-      saveName: "",
+      saveName: "" as string,
       rootNode: {
         name: "Root",
         comment: "Empty comment",
         children: [],
-      },
-      showMisc: true,
-      dateTimeFormat: "YYYY年M月D日 HH:mm:ss",
-      message: "",
+      } as NodeData,
+      showMisc: true as boolean,
+      dateTimeFormat: "YYYY年M月D日 HH:mm:ss" as string,
+      message: "" as string,
     };
   },
   methods: {
     handleDeleteNode() {},
-    downloadFile(content, fileName, mimeType) {
+    downloadFile(content: string, fileName: string, mimeType?: string) {
       const blob = new Blob([content], { type: mimeType ?? "text/plain" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
@@ -77,13 +80,33 @@ export default {
       this.message = "Downloaded";
     },
     upload() {
-      this.$refs.fileInput.click();
+      const fileInput = this.$refs.fileInput as HTMLInputElement;
+      fileInput.click();
     },
     handleUpload() {
-      const file = this.$refs.fileInput.files[0];
+      const fileInput = this.$refs.fileInput as HTMLInputElement;
+      const files = fileInput.files;
+      if (!files) {
+        this.message = "Upload failed";
+        return;
+      }
+      const file = files[0];
+      if (!file) {
+        this.message = "Upload failed";
+        return;
+      }
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const toParse = e.target.result;
+      reader.onload = (event) => {
+        const target = event.target;
+        if (!target) {
+          this.message = "Upload failed";
+          return;
+        }
+        const toParse = target.result;
+        if (typeof toParse != "string") {
+          this.message = "Upload failed";
+          return;
+        }
         this.rootNode = JSON.parse(toParse);
         this.saveName = file.name.slice(0, -5);
         this.message = "Uploaded";
@@ -119,7 +142,7 @@ export default {
       this.rootNode = JSON.parse(toParse);
     }
   },
-};
+});
 </script>
 
 <style scoped>

@@ -1,0 +1,18 @@
+{
+  "include": ["src/*.vue", "src/*.ts"],
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": [],
+    "strict": true,
+    "noEmit": true,
+    "module": "ESNext",
+
+    "verbatimModuleSyntax": true,
+
+    "skipLibCheck": true,
+    "composite": true,
+
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "moduleResolution": "bundler"
+  }
+}
