@@ -3,11 +3,17 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "format": "prettier --write '**/*.{css,js,ts,vue,html,json,yml}'",
+    "format:once": "prettier --write '**/*.{css,js,ts,vue,html,json,yml}'",
+    "format:daemon": "onchange '**/*.{css,js,ts,vue,html,json,yml}' -- prettier --write {{changed}}",
+    "format": "run-s format:once format:daemon",
+    "check:once": "vue-tsc --build --force",
+    "check:daemon": "vue-tsc --build --force --watch",
+    "check": "npm run check:daemon",
     "dev": "vite",
+    "all": "run-p format check dev",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "vue-tsc --build --force"
+    "start": "run-s build preview"
   },
   "dependencies": {
     "moment": "^2.30.1",
@@ -18,6 +24,8 @@
     "@types/node": "^22.7.5",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-vue": "^5.1.4",
+    "npm-run-all2": "^6.2.3",
+    "onchange": "^7.1.0",
     "prettier": "^3.3.3",
     "vite": "^5.4.8",
     "vite-plugin-vue-devtools": "^7.4.6",
